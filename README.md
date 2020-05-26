@@ -116,7 +116,7 @@ O que **gostariamos** de ver:
 - Documentação fácil e bem escrita.
 - Utilização de docker.
 - Processamento assíncrono.
-- Tornado, Sanic, Flask.
+- IOHttp, Flask.
 - Cache de dados.
 - Deploy automatizado.
 - Amigavel com Google Cloud.
