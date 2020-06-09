@@ -41,7 +41,7 @@ def reset_database():
 
     result = companys_collection.insert_many(companys).inserted_ids
     if not result:
-        raise Exception('Failed')
+        return 'Failed'
     return db
 
 def convert_data(input_query, return_id=False, json_render=True):
@@ -60,7 +60,6 @@ def convert_data(input_query, return_id=False, json_render=True):
                 data[k] = data[k].strftime("%d/%m/%Y, %H:%M:%S")
         temp_data.append(data)
     if json_render:
-        print("Aqui2", temp_data)
         return json.dumps(temp_data)
     return temp_data
 
@@ -90,16 +89,14 @@ def company_products():
 @app.route("/PhoneRecharges", methods=['POST'])
 def phone_recharge_post():
     form = request.json
-    print(form)
     recharges_collection = db['recharges']
 
     company = []
     product = []
     if "company_id" in form.keys():
         company = find_company(form["company_id"], json_render=False)
-        print(company)
     else:
-        raise Exception('Invalid company')
+        return 'Invalid company'
     if company and "product_id" in form.keys():
         products_id = [x["id"] for x in company[0]["products"]]
         if form["product_id"] in products_id:
@@ -107,19 +104,19 @@ def phone_recharge_post():
                 if form["product_id"] in x["id"]:
                     product = x
         else:
-            raise Exception('Invalid product')
+            return 'Invalid product'
     else:
-        raise Exception('Invalid company')
+        return 'Invalid company'
     if product and "value" in form.keys():
         if not (float(product['value']) == float(form['value'])):
-            raise Exception("Wrong value")
+            return "Wrong value"
 
     if not form.get('phone_number', None):
-        raise Exception("Invalid phone")
+        return "Invalid phone"
 
     phone = ''.join([x for x in form["phone_number"] if x.isdigit()])
     if not (phone and len(phone) == 13):
-        raise Exception("Invalid phone")
+        return "Invalid phone"
     recharge = {
         "company_id": form["company_id"],
         "product_id": form["product_id"],
@@ -137,7 +134,7 @@ def phone_recharge_get():
     recharge_id = request.args.get('id', None)
 
     if not(phone_number or recharge_id):
-        raise Exception("Error")
+        return "Error"
 
     if recharge_id:
         recharges = db['recharges'].find({"_id": ObjectId("%s" % recharge_id.strip())})
@@ -145,9 +142,7 @@ def phone_recharge_get():
         recharges = db['recharges'].find({"phone_number": phone_number.strip()})
     return_temp = []
     for i in recharges:
-        print(i)
         return_temp.append(i)
-    print("aqui", return_temp)
     return convert_data(return_temp, return_id=True)
 
 
