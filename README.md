@@ -114,11 +114,11 @@ Response
 ```
 
 Perguntas que devem ser respondidas
-- Quais foram os principais desafios durante o desenvolvimento?
+#### Quais foram os principais desafios durante o desenvolvimento?
 Por não ter familiaridade com banco não relacional, tive que estudar como aplicar a solução. Isso tomou boa parte do tempo de desenvolvimento.
-- O que você escolheu como arquitetura/framework/banco e por que?
+#### O que você escolheu como arquitetura/framework/banco e por que?
 Utilizei flask por ser intuitivo e fácil de implementar, além de ser voltado para API e como banco escolhi o MongoDB por ser rápido e intuitivo. 
-- O que falta desenvolver / como poderiamos melhorar o que você entregou?
+#### O que falta desenvolver / como poderiamos melhorar o que você entregou?
 Falta desenvolver os testes unitário e talvez aplicar uma arquitetura mais organizada. Escolhi manter um código mais simples por falta de tempo.
-- Python é a melhor escolha para esta atividade? Por que?
+#### Python é a melhor escolha para esta atividade? Por que?
 Sim, é muito fácil de subir uma aplicação e conectar com um banco, além da facilidade para tratar os dados e fazer verificações mais complexas nos dados.
