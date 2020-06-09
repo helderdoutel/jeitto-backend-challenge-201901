@@ -1,0 +1,112 @@
+{
+	"info": {
+		"_postman_id": "28e27309-4c4e-45aa-ae51-00afc5086681",
+		"name": "jeitto",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "http://localhost:5000/PhoneRecharges?\"company_id\"= \"claro_11\",&\"product_id\"= \"claro_10\",&\"phone_number\"= \"5511999999999\",&\"value\"= 10.00",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"company_id\": \"claro_11\",\r\n   \"product_id\": \"claro_10\",\r\n   \"phone_number\": \"5511952814353\",\r\n   \"value\": 10.00\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/PhoneRecharges?\"company_id\"= \"claro_11\",&\"product_id\"= \"claro_10\",&\"phone_number\"= \"5511999999999\",&\"value\"= 10.00",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"PhoneRecharges"
+					],
+					"query": [
+						{
+							"key": "\"company_id\"",
+							"value": " \"claro_11\","
+						},
+						{
+							"key": "\"product_id\"",
+							"value": " \"claro_10\","
+						},
+						{
+							"key": "\"phone_number\"",
+							"value": " \"5511999999999\","
+						},
+						{
+							"key": "\"value\"",
+							"value": " 10.00"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:5000/CompanyProducts",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/CompanyProducts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"CompanyProducts"
+					],
+					"query": [
+						{
+							"key": "company_id",
+							"value": "tim_11",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:5000/PhoneRecharges?phone_number=5511952814353",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/PhoneRecharges?phone_number=5511952814353",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"PhoneRecharges"
+					],
+					"query": [
+						{
+							"key": "phone_number",
+							"value": "5511952814353"
+						},
+						{
+							"key": "id",
+							"value": "5edee5036565fa7c70effe69",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

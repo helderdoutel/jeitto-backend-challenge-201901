@@ -1,59 +1,85 @@
 # Desafio Backend do Jeitto
 
-Este desafio tem como intuito testar as habilidades de desenvolvimento e arquitetura de software do candidato à uma vaga no time de engenharia do Jeitto.
-Não foque apenas em entregar este projeto, ele será sim avaliado porém foque mais em aprender durante o processo e tirar o máximo de proveito possível desta experiência.
-Antes de começar a codificar, leia todo o texto. Entenda bem o problema, o que foi proposto e em caso de dúvida / sugestão entre em contato.
-No final do texto existe uma sessão com leituras recomendadas. São textos variados que possuem o intuito auxiliar no processo de decisão e aprendizagem para chegar sucesso ao final deste desafio.
 
-Divirta-se! :)
+## Pré-requisistos
 
+MongoDB na porta 27017  
+Python3
 
-## Problema: Recarga de telefônica
-Implementar uma API para permitir a compra de créditos telefônicos onde o usuário, após informar o número à ser recarregado a compra será efetuada.
+## MongoDB
 
+MongoDB foi escolhido pela facilidade de implementação e escalabilidade.
 
-### Pesquisa por produtos
-O primeiro recurso que deve ser implementado é o que irá permitir a manutenção (CRUD) e busca por produtos compatíveis para serem utilizado na recarga. O mesmo deverá, em seu método GET, também receber um parâmetro "company_id" e retornar um json com os produtos daquela companhia informada. Como no exemplo abaixo:
+## Como rodar
+Com todos pré-requisitos satisfeitos:
 
-Exemplo 1.1: GET /CompanyProducts?company_id=claro_11
+> pip install -r requirements.txt
 
-```json
-{
-"company_id": "claro_11",
- "products":[
-   {"id": "claro_10", "value": 10.0},
-   {"id": "claro_20", "value": 20.0}
- ]
-}
-```
+Com o MongoDB rodando, execute o script principal
+> py main.py
 
-Exemplo 1.2: GET /CompanyProducts
+## Requests com postman
+Utilizei o Postman para simular as requisições da API conforme arquivo "jeitto.postman_collection.json"
+
+#### Consultando URLs via Postman
+> POST localhost:50/CompanyProducts
+
+Response
 ```json
 [
-   {
-       "company_id": "claro_11",
-       "products":[
-           {"id": "claro_10", "value": 10.0},
-           {"id": "claro_20", "value": 20.0}
-       ]
-   },
-   {
-       "company_id": "tim_11",
-       "products":[
-           {"id": "tim_10", "value": 10.0},
-           {"id": "tim_20", "value": 20.0}
-       ]
-   }
+    {
+        "company_id": "claro_11",
+        "products": [
+            {
+                "id": "claro_10",
+                "value": 10.0
+            },
+            {
+                "id": "claro_20",
+                "value": 20.0
+            }
+        ]
+    },
+    {
+        "company_id": "tim_11",
+        "products": [
+            {
+                "id": "tim_10",
+                "value": 10.0
+            },
+            {
+                "id": "tim_20",
+                "value": 20.0
+            }
+        ]
+    }
 ]
 ```
 
-Obs.: Os demais metodos, deverão seguir a mesma estrutura do payload indicado no exemplo 1.1.
+> POST localhost:5000/CompanyProducts?company_id=tim_11
 
+Response
+```json
+[
+    {
+        "company_id": "tim_11",
+        "products": [
+            {
+                "id": "tim_10",
+                "value": 10.0
+            },
+            {
+                "id": "tim_20",
+                "value": 20.0
+            }
+        ]
+    }
+]
+```
 
-### Efetivação da recarga
-O segundo recurso deverá efetivar a recarga telefônica propriamente dita. Permitirá um POST com os dados necessários para a recarga, bem como GETs para busca de dados como nos exemplos abaixo:
+> POST localhost:5000/PhoneRecharges
 
-Exemplo 2.1: POST /PhoneRecharges
+REQUEST
 ```json
 {
    "company_id": "claro_11",
@@ -63,80 +89,36 @@ Exemplo 2.1: POST /PhoneRecharges
 }
 ```
 
-Exemplo 2.2: GET /PhoneRecharges?id=id_da_recarga
+Response
 ```json
 {
-   "id": "id_da_recarga",
-   "created_at": "2019-02-01T13:00:00.000Z",
-   "company_id": "claro_11",
-   "product_id": "claro_10",
-   "phone_number": "5511999999999",
-   "value": 10.00
+    "id": "5edee9d7396f77cdb072f843"
 }
 ```
 
-Exemplo 2.3: GET /PhoneRecharges?phone_number=5511999999999
+> GET localhost:5000/PhoneRecharges?phone_number=5511999999999
+> GET localhost:5000/PhoneRecharges?id=5edee9d7396f77cdb072f843
+
+Response
 ```json
 [
-   {
-       "id": "id_da_recarga",
-       "created_at": "2019-02-01T13:00:00.000Z",
-       "company_id": "claro_11",
-       "product_id": "claro_10",
-       "phone_number": "5511999999999",
-       "value": 10.00
-   },
-   {
-       "id": "id_da_recarga",
-       "created_at": "2019-03-14T13:00:00.000Z",
-       "company_id": "claro_11",
-       "product_id": "claro_10",
-       "phone_number": "5511999999999",
-       "value": 10.00
-   }
+    {
+        "company_id": "claro_11",
+        "product_id": "claro_10",
+        "phone_number": "5511999999999",
+        "value": 10.0,
+        "created_at": "09/06/2020, 01:45:59",
+        "id": "5edee9d7396f77cdb072f843"
+    }
 ]
 ```
-
-Obs.: Os demais métodos não deverão ser permitidos para este recurso.
-
-
-## Como enviar sua sua solução
-Para participar você deverá fazer um fork deste repositório e submeter as alterações apenas para a sua cópia. Não faça um PR para este repositório, apenas envie um link para o avaliador que está em contato com você.
-
-O que **queremos** ver:
-- Python 3.
-- Testes bem escritos e com uma boa cobertura.
-- Legibilidade e manutenibilidade de código.
-- Código em inglês.
-- Segurança de dados e acesso.
-- Tratamento de erros.
-- Organização e insruções de como executar o projeto.
-
-O que **gostariamos** de ver:
-- Documentação fácil e bem escrita.
-- Utilização de docker.
-- Processamento assíncrono.
-- AIOHTTP, Flask.
-- Cache de dados.
-- Deploy automatizado.
-- Amigavel com Google Cloud.
-- Segurança de dados.
 
 Perguntas que devem ser respondidas
 - Quais foram os principais desafios durante o desenvolvimento?
+Por não ter familiaridade com banco não relacional, tive que estudar como aplicar a solução. Isso tomou boa parte do tempo de desenvolvimento.
 - O que você escolheu como arquitetura/framework/banco e por que?
+Utilizei flask por ser intuitivo e fácil de implementar, além de ser voltado para API e como banco escolhi o MongoDB por ser rápido e intuitivo. 
 - O que falta desenvolver / como poderiamos melhorar o que você entregou?
+Falta desenvolver os testes unitário e talvez aplicar uma arquitetura mais organizada. Escolhi manter um código mais simples por falta de tempo.
 - Python é a melhor escolha para esta atividade? Por que?
-
-
-## Trilha sonora recomendada
-- [AC/DC Radio](https://open.spotify.com/user/spotify/playlist/37i9dQZF1E4sEEhVjuqbvL?si=uw6fr-VcTVSopgvRL0koWw)
-
-
-## Leituras recomendadas
-- [Small acts manifesto](http://smallactsmanifesto.org/) sobre comportamento humano e social.
-- [The Twelve-Factor App](https://12factor.net/pt_br/) é manifesto sobre o desenvolvimento e boas práticas para facilitar a manutenção de softwares.
-- [Design Patterns for Humans](https://github.com/kamranahmedse/design-patterns-for-humans) texto excelente explicando e mostrando exemplos de uso de padrões de projetos.
-- [Python Patterns](https://github.com/faif/python-patterns) é um repostiório com exemplos de padrões de projetos implementados em python.
-- [Continuous integration vs. continuous delivery vs. continuous deployment](https://www.atlassian.com/continuous-delivery/principles/continuous-integration-vs-delivery-vs-deployment)
-- [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md#operation-object)
+Sim, é muito fácil de subir uma aplicação e conectar com um banco, além da facilidade para tratar os dados e fazer verificações mais complexas nos dados.
