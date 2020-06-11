@@ -6,6 +6,8 @@ import re
 import json
 from bson import ObjectId
 import datetime
+from model.company import FactoryCompany
+from model.recharges import FactoryRecharge
 
 # creating app
 app = Flask(__name__)
@@ -13,6 +15,8 @@ app = Flask(__name__)
 # start connection to database
 client = MongoClient('localhost', 27017)
 db = None
+faccomp = FactoryCompany()
+facrec = FactoryRecharge()
 
 def reset_database():
     """Reset database on startup."""
@@ -44,37 +48,6 @@ def reset_database():
         return 'Failed'
     return db
 
-def convert_data(input_query, return_id=False, json_render=True):
-    """Returns json."""
-    if isinstance(input_query, dict):
-        input_query = [input_query]
-    temp_data = []
-    for data in input_query:
-        if not return_id:
-            del data['_id']
-        else:
-            data["id"] = str(data['_id']).replace("ObjectId('", '').replace("'", '')
-            del data['_id']
-        for k in data.keys():
-            if isinstance(data[k], datetime.datetime):
-                data[k] = data[k].strftime("%d/%m/%Y, %H:%M:%S")
-        temp_data.append(data)
-    if json_render:
-        return json.dumps(temp_data)
-    return temp_data
-
-def find_company(company_id=None, json_render=True):
-    """."""
-    if company_id:
-        companys = db['companys'].find({"company_id": company_id})
-    else:
-        companys = db['companys'].find({})
-    return_temp = []
-    for i in companys:
-        return_temp.append(i)
-    return convert_data(return_temp, json_render=json_render)
-
-
 @app.route("/", methods=['GET'])
 def home():
     """Home page."""
@@ -84,7 +57,9 @@ def home():
 @app.route("/CompanyProducts", methods=['GET'])
 def company_products():
     company = request.args.get('company_id', None)
-    return find_company(company)
+    companys = faccomp.loadCompany(db, company_id=company)
+    companys = faccomp.company_to_json(companys)
+    return companys
 
 @app.route("/PhoneRecharges", methods=['POST'])
 def phone_recharge_post():
@@ -94,13 +69,13 @@ def phone_recharge_post():
     company = []
     product = []
     if "company_id" in form.keys():
-        company = find_company(form["company_id"], json_render=False)
+        company = faccomp.loadCompany(db, company_id=form["company_id"])
     else:
         return 'Invalid company'
     if company and "product_id" in form.keys():
-        products_id = [x["id"] for x in company[0]["products"]]
+        products_id = [x["id"] for x in company[0].get_products()]
         if form["product_id"] in products_id:
-            for x in company[0]["products"]:
+            for x in company[0].get_products():
                 if form["product_id"] in x["id"]:
                     product = x
         else:
@@ -117,16 +92,16 @@ def phone_recharge_post():
     phone = ''.join([x for x in form["phone_number"] if x.isdigit()])
     if not (phone and len(phone) == 13):
         return "Invalid phone"
-    recharge = {
-        "company_id": form["company_id"],
-        "product_id": form["product_id"],
-        "phone_number": phone,
-        "value": float(form["value"]),
-        "created_at": datetime.datetime.utcnow()
-    }
 
-    result = recharges_collection.insert_one(recharge).inserted_id
-    return json.dumps({"id": str(result)})
+    recharge = facrec.new_recharge(
+        company_id=form["company_id"],
+        product_id=form["product_id"],
+        phone_number=phone,
+        value=float(form["value"]),
+        created_at=datetime.datetime.utcnow()
+    )
+    result = facrec.insert(db, recharge)
+    return json.dumps({"id": result[0].get_recharge_id()})
 
 @app.route("/PhoneRecharges", methods=['GET'])
 def phone_recharge_get():
@@ -136,16 +111,11 @@ def phone_recharge_get():
     if not(phone_number or recharge_id):
         return "Error"
 
-    if recharge_id:
-        recharges = db['recharges'].find({"_id": ObjectId("%s" % recharge_id.strip())})
-    else:
-        recharges = db['recharges'].find({"phone_number": phone_number.strip()})
-    return_temp = []
-    for i in recharges:
-        return_temp.append(i)
-    return convert_data(return_temp, return_id=True)
+    rec = facrec.loadrecharge(db, recharge_id=recharge_id, phone_number=phone_number)
+    rec = facrec.recharge_to_json(recharges=rec)
+    return rec
 
 
 if __name__ == "__main__":
     db = reset_database()
-    app.run()
+    app.run(debug=True)
