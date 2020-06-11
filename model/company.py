@@ -14,15 +14,11 @@ class Company(object):
         return self.products
 
 class FactoryCompany():
-    """."""
+    """Campany factory."""
     tools = Tools()
 
-    def newCompany(self, db, company_id):
-        """."""
-        return True
-
     def loadCompany(self, db, company_id=None):
-        """."""
+        """Load company object."""
         if company_id:
             companys = db['companys'].find({"company_id": company_id})
         else:
@@ -33,7 +29,7 @@ class FactoryCompany():
         return return_temp
 
     def company_to_json(self, companys=[]):
-        """."""
+        """Convert object to json."""
         return_list = []
         for c in companys:
             dic = {
