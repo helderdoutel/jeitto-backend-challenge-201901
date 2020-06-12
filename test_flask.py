@@ -76,9 +76,6 @@ def test_phone_recharge_post():
         product_id="claro_20", phone_number="55119999999", value=20.0).keys()
 
 def test_phone_recharge_get():
-
-    
     main.request.args = {'id': '5ee17afd7ba2c152b796d37c', 'phone_number': '5511999999999'}
     main.facrec = recharges.FactoryRecharge()
-    print(main.phone_recharge_get())
-
+    assert isinstance(json.loads(main.phone_recharge_get()), list)
