@@ -1,3 +1,4 @@
+"""Recharge model."""
 from model.tools import Tools
 from bson import ObjectId
 
@@ -42,20 +43,24 @@ class Recharge(object):
 
 class FactoryRecharge():
     """Racharge factory."""
+
     tools = Tools()
 
     def loadrecharge(self, db, recharge_id=None, phone_number=None):
         """Load object from database."""
         # Search data from data
         if recharge_id:
-            recharges = db['recharges'].find({"_id": ObjectId("%s" % recharge_id.strip())})
+            recharges = db['recharges'].find(
+                {"_id": ObjectId("%s" % recharge_id.strip())})
         else:
-            recharges = db['recharges'].find({"phone_number": phone_number.strip()})
+            recharges = db['recharges'].find(
+                {"phone_number": phone_number.strip()})
         return_temp = []
         for i in recharges:
             # Create list of objectes from database
             return_temp.append(Recharge(
-                recharge_id=str(i['_id']).replace("ObjectId('", '').replace("'", ''),
+                recharge_id=str(i['_id']).
+                replace("ObjectId('", '').replace("'", ''),
                 created_at=i['created_at'].strftime("%d/%m/%Y, %H:%M:%S"),
                 company_id=i['company_id'],
                 product_id=i['product_id'],
@@ -69,12 +74,12 @@ class FactoryRecharge():
         # build dict from object
         for c in recharges:
             dic = {
-               "id": c.get_recharge_id(),
-               "created_at":c.get_created_at(),
-               "company_id":c.get_company_id(),
-               "product_id":c.get_product_id(),
-               "phone_number": c.get_phone_number(),
-               "value":c.get_value()
+                "id": c.get_recharge_id(),
+                "created_at": c.get_created_at(),
+                "company_id": c.get_company_id(),
+                "product_id": c.get_product_id(),
+                "phone_number": c.get_phone_number(),
+                "value": c.get_value()
             }
             return_list.append(dic)
         # convert dict to json
@@ -94,9 +99,9 @@ class FactoryRecharge():
     def insert(self, db, recharge):
         """Insert object in database."""
         recharge_insert = {
-            "created_at":recharge.get_created_at(),
-            "company_id":recharge.get_company_id(),
-            "product_id":recharge.get_product_id(),
+            "created_at": recharge.get_created_at(),
+            "company_id": recharge.get_company_id(),
+            "product_id": recharge.get_product_id(),
             "phone_number": recharge.get_phone_number(),
             "value": recharge.get_value(),
         }

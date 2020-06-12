@@ -1,10 +1,7 @@
 """Jeito teste pratico."""
 from pymongo import MongoClient
-import os
-from flask import Flask, request, session, jsonify
-import re
+from flask import Flask, request
 import json
-from bson import ObjectId
 import datetime
 from model.company import FactoryCompany
 from model.recharges import FactoryRecharge
@@ -18,6 +15,7 @@ db = None
 faccomp = FactoryCompany()
 facrec = FactoryRecharge()
 
+
 def reset_database():
     """Reset database on startup."""
     client.drop_database('jeitto_db')
@@ -29,14 +27,14 @@ def reset_database():
     companys = [
         {
             "company_id": "claro_11",
-            "products":[
+            "products": [
                 {"id": "claro_10", "value": 10.0},
                 {"id": "claro_20", "value": 20.0}
             ]
         },
         {
             "company_id": "tim_11",
-            "products":[
+            "products": [
                 {"id": "tim_10", "value": 10.0},
                 {"id": "tim_20", "value": 20.0}
             ]
@@ -48,6 +46,7 @@ def reset_database():
         return 'Failed'
     return db
 
+
 @app.route("/", methods=['GET'])
 def home():
     """Home page."""
@@ -56,21 +55,24 @@ def home():
 
 @app.route("/CompanyProducts", methods=['GET'])
 def company_products():
+    """Return products."""
     company = request.args.get('company_id', None)
     # load object from database
-    companys = faccomp.loadCompany(db, company_id=company)
+    companys = faccomp.load_company(db, company_id=company)
     # convert object to json
     companys = faccomp.company_to_json(companys)
     return companys
 
+
 @app.route("/PhoneRecharges", methods=['POST'])
 def phone_recharge_post():
+    """Recharge phone from post."""
     form = request.json
     company = []
     product = []
     # check for company_id in the form
     if "company_id" in form.keys():
-        company = faccomp.loadCompany(db, company_id=form["company_id"])
+        company = faccomp.load_company(db, company_id=form["company_id"])
     else:
         return 'Invalid company'
     if company and "product_id" in form.keys():
@@ -114,8 +116,10 @@ def phone_recharge_post():
     # return json to user
     return json.dumps({"id": result[0].get_recharge_id()})
 
+
 @app.route("/PhoneRecharges", methods=['GET'])
 def phone_recharge_get():
+    """Get info of recharge."""
     phone_number = request.args.get('phone_number', None)
     recharge_id = request.args.get('id', None)
 
@@ -124,7 +128,8 @@ def phone_recharge_get():
         return "Error"
 
     # recreate object from data
-    rec = facrec.loadrecharge(db, recharge_id=recharge_id, phone_number=phone_number)
+    rec = facrec.loadrecharge(
+        db, recharge_id=recharge_id, phone_number=phone_number)
 
     # convert to json
     rec = facrec.recharge_to_json(recharges=rec)
