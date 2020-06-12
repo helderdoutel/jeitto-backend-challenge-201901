@@ -41,7 +41,7 @@ class Recharge(object):
 
 
 class FactoryRecharge():
-    """."""
+    """Racharge factory."""
     tools = Tools()
 
     def loadrecharge(self, db, recharge_id=None, phone_number=None):

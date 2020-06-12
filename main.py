@@ -66,8 +66,6 @@ def company_products():
 @app.route("/PhoneRecharges", methods=['POST'])
 def phone_recharge_post():
     form = request.json
-    recharges_collection = db['recharges']
-
     company = []
     product = []
     # check for company_id in the form
